@@ -1,6 +1,7 @@
 # Limpieza y formateo para el análisis
 
 # Distancia de red a objetos puntuales ------------------------------------
+
   # Armar ppp ---------------------------------------------------------------
 
     ppp <- MAP[map_lgl(MAP,
@@ -42,10 +43,10 @@
       # Quitar nodos fuera de CABA (más de 500m)
       ppp <- ppp |> filter(near_dist < units::as_units(500, "m") )
 
-      save(net_aux, ppp, file = "data/net.RData")
+      save(net_aux, ppp, file = here::here("analysis/data/net.RData") )
 
     }else{
-      load("data/net.RData")
+      load(here::here("analysis/data/net.RData") )
     }
 
   # Calcular matriz de distancias ------------------------------------------------
@@ -92,4 +93,4 @@
   rm(res, net_aux, dis)
 
 # Guardar bases ----------------------------------------------------------
-  save(esquina, file = "data/esquina.RData")
+  save(esquina, file = here::here("analysis/data/esquina.RData") )

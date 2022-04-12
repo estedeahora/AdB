@@ -3,7 +3,6 @@
 # CARTO: Radios, Comuna y CABA --------------------------------------------
 
 # wfs Conection
-fileName <- tempfile()
 wfs <- "https://geoservicios.indec.gov.ar/geoserver/ows?service=wfs&version=1.0.0&request=GetCapabilities"
 
 download.file(wfs, fileName)
@@ -548,4 +547,4 @@ MAP_EDU <- list()
 # Save data --------------------------------------------------------------------
 
   save(MAP, net, RADIO, CABA, COMUNA,
-       file = "data/data.RData")
+       file = here::here("analysis/data/data.RData") )

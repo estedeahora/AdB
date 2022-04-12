@@ -5,7 +5,7 @@
   data <- esquina |>
     select(AUX$db_label$db[AUX$db_label$ANALISIS == 1])
 
-# 01 Reducciónb de dimensionalidad ------------------------------------------
+# 01 Reducción de dimensionalidad ------------------------------------------
   res_PCA <- data |>
     st_drop_geometry() |>
     PCA(graph = F)
