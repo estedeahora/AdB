@@ -1,0 +1,21 @@
+Package: AdB
+Title: Arquitectura  del bienestar en la Ciudad Autónoma de Buenos Aires: Diálogos con la desigualdad urbana
+Version: 1.0.0.0001
+Authors@R:
+      person(given = "Pablo",
+         family = "Serrati",
+         role = c("cre", "aut"),
+         email = "pabloserrati@gmail.com",
+         comment = c(ORCID = "0000-0001-5300-2243"))
+      person(given = "María Mercedes",
+         family = "Di Virgilio",
+         role = c("aut"),
+         comment = c(ORCID = "0000-0002-5801-0784"))   
+Description: Este repositorio contiene los datos, el código y materiales suplementarios del artículo: "Arquitectura  del bienestar en la Ciudad Autónoma de Buenos Aires: Diálogos con la desigualdad urbana"
+License: MIT + file LICENSE
+ByteCompile: true
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.2
+Imports: bookdown

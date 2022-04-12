@@ -1,16 +1,15 @@
 # results
-results/*
-data/*
+analysis/results/*
+analysis/data/*
 !data/base.xlsx
 
-
 # Artículo
-AdB_Figuras-y-Tablas.rar
-AdB_Propuesta_RES_*
-~$B_Propuesta_RES_*
+analysis/AdB_Figuras-y-Tablas.rar
+analysis/AdB_Propuesta_RES_*
+analysis/~$B_Propuesta_RES_*
 
-src/04-Resultados.R
-src/_functions.R
+# analysis/scripts/04-Resultados.R
+# analysis/scripts/_functions.R
 
 # _rawdata
 _rawdata/*
@@ -51,3 +50,4 @@ README.Rmd
 
 # R Environment Variables
 .Renviron
+.Rproj.user
