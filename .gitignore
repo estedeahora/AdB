@@ -1,19 +1,19 @@
 # results
 analysis/results/*
 analysis/data/*
-!data/base.xlsx
+!analysis/data/base.xlsx
 
 # Artículo
 analysis/AdB_Figuras-y-Tablas.rar
-analysis/AdB_Propuesta_RES_*
-analysis/~$B_Propuesta_RES_*
+*.docx
+
 
 # analysis/scripts/04-Resultados.R
 # analysis/scripts/_functions.R
 
 # _rawdata
-_rawdata/*
-_draft/*
+analysis/_rawdata/*
+analysis/_draft/*
 
 # History files
 .Rhistory
