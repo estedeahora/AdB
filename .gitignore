@@ -1,14 +1,16 @@
-
 # results
 results/*
 data/*
 !data/base.xlsx
 
+
+# Artículo
 AdB_Figuras-y-Tablas.rar
 AdB_Propuesta_RES_*
+~$B_Propuesta_RES_*
+
 src/04-Resultados.R
 src/_functions.R
-
 
 # _rawdata
 _rawdata/*
