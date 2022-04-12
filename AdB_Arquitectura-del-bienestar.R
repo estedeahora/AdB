@@ -1,6 +1,6 @@
 # Packages -------------------------------
 
-source("src/00-Packages.R", encoding = "UTF-8")
+source("scripts/00-Packages.R", encoding = "UTF-8")
 
 # Auxiliary list ------------------------------------------------------------
 
@@ -22,15 +22,15 @@ AUX <- list(# Do you want to download the data?
 
 if(AUX$d){
   cat("Inicio:", Sys.time(),"\n")
-  source("src/01-carga-y-descarga-de-datos.R", encoding = "UTF-8")
-  source("src/02-data-wrangling.R", encoding = "UTF-8")
+  source("scripts/01-carga-y-descarga-de-datos.R", encoding = "UTF-8")
+  source("scripts/02-data-wrangling.R", encoding = "UTF-8")
 }else{
   if(file.exists("data/data.RData") &&
      file.exists("data/net.RData") &&
      file.exists("data/esquina.RData")){
-    # src01
+    # scripts01
     load("data/data.RData")
-    # src02
+    # scripts02
     # load("data/net.RData")
     load("data/esquina.RData")
   }else{
@@ -38,13 +38,11 @@ if(AUX$d){
   }
 }
 
-source("src/03-Analisis-y-modelado.R", encoding = "UTF-8")
+source("scripts/03-Analisis-y-modelado.R", encoding = "UTF-8")
 
-if(file.exists("src/04-Resultados.R") &&
-   file.exists("src/_functions.R")){
-  source("src/_functions.R", encoding = "UTF-8")
-  source("src/04-Resultados.R", encoding = "UTF-8")
+if(file.exists("scripts/04-Resultados.R") &&
+   file.exists("scripts/_functions.R")){
+  source("scripts/_functions.R", encoding = "UTF-8")
+  source("scripts/04-Resultados.R", encoding = "UTF-8")
 }
-
-
 

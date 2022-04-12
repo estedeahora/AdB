@@ -81,12 +81,6 @@ MAP_EDU <- list()
     mutate(tipo = "Secundario") |>
     select(tipo, sector)
 
-  # MAP_EDU$COMUN <- ESC |>
-  #   filter(Inicial | Primario | Secundario) |>
-  #   mutate(tipo = "Educación común",
-  #          objetivo = "Educación  común") |>
-  #   select(tipo, objetivo, sector, Inicial:Secundario)
-
   # 02 Educación superior ----------------------------------------------------
 
   MAP_EDU$SUPERIOR <- ESC |>
@@ -99,7 +93,6 @@ MAP_EDU <- list()
   rm(UNI)
 
   # 03 Espacios de educación complementarios -----------------------------------
-  # Sumar acá Jugoteca y OSECom
 
   MAP_aux <- list()
 
