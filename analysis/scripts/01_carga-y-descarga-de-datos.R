@@ -5,6 +5,8 @@
 # wfs Conection
 wfs <- "https://geoservicios.indec.gov.ar/geoserver/ows?service=wfs&version=1.0.0&request=GetCapabilities"
 
+fileName <- tempfile()
+
 download.file(wfs, fileName)
 request <- GMLFile$new(fileName)
 client <- WFSCachingClient$new(request)
@@ -13,7 +15,7 @@ client <- WFSCachingClient$new(request)
 RADIO <- client$getLayer(layer = "geocenso2010:radios_codigo") |>
   select(ID = link) |>
   filter(str_starts(ID, "02")) |>
-  mutate(COMUNA = str_sub(ID, start = 3, end = 6) ) |>
+  mutate(COMUNA = str_sub(ID, start = 3, end = 5) ) |>
   st_transform(crs = 4326)
 
 rm(client, request,wfs, filename)
