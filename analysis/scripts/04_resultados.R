@@ -2,57 +2,15 @@
 
 load(here::here("analysis/data/radio.RData"))
 
-# Figuras ----------------------------------------------------------------------
+# Figuras Cuerpo ----------------------------------------------------------------------
 
-  # Fig01. Evolución de la población -------------------------------------------
-
-  p01 <- AUX$EVO |>
-    ggplot(mapping = aes(x = ANO) ) +
-    geom_area(mapping = aes(y = POBLACION, fill = "CABA"), alpha = 0.4)+
-    geom_area(mapping = aes(y = POB_VILLA, fill = "Villa"), alpha = 0.4) +
-    geom_col(mapping = aes(y = POBLACION), width = 1, fill = "tomato3") +
-    scale_y_continuous(name = "Población (en millones)",
-                       labels = format(seq(0, 3.5, by = 0.5), digits = 1),
-                       breaks = seq(0, 3.5, by = 0.5)) +
-    scale_x_continuous(name = "Año",
-                       breaks = c(AUX$EVO$ANO[is.na(AUX$EVO$POBLACION) == F])) +
-    scale_fill_discrete("Población total") +
-    theme_minimal() +
-    theme(axis.text.x = element_text(size = 10, angle = 90, hjust = -1),
-          legend.position = "bottom")
-
-  ggsave(filename = "results/01_EVOL-POB.png",
-         plot = p01,
-         width = 20, height = 12, units = "cm")
-
-  # Fig02. Evolución del stock de viviendas ------------------------------------------------------
-
-  p02 <- AUX$VIV |>
-    pivot_longer(cols = -VIV) |>
-    mutate(ANO = str_remove(name, "CENSO"),
-           ANO = as.numeric(ANO),
-           value = value / 1000000) |>
-    ggplot(aes(x = ANO, y = value, group = VIV, fill = VIV)) +
-    geom_col(alpha = 0.5) +
-    scale_y_continuous("Cantidad de viviendas (en millones)",
-                       breaks = seq(0, 1.5, by = 0.25 )) +
-    scale_x_continuous("Censo",
-                       breaks = c(1991, 2001, 2010 )) +
-    scale_fill_discrete("Viviendas") +
-    theme_minimal() +
-    theme(legend.position = "bottom")
-
-  ggsave(filename = "results/02_EVOL_VIV.png",
-         plot = p02,
-         width = 15, height = 12, units = "cm")
-
-  # Fig03. Entornos urbanos ------------------------------------------------------
+  # Fig01. Entornos urbanos ------------------------------------------------------
 
   AUX$TH <- c("#D1E107", "#0D9743",
               "#0AE1A7", "#E8EC6E", "#0072B2",
               "#A194FC", "#CA280E", "#F07561", "#FCCB94")
 
-  p03 <- RADIO$REC |>
+  p01 <- RADIO$REC |>
     ggplot() +
     geom_sf(aes(fill = TIPO_HABIT), alpha = 0.7, color = NA) +
     geom_sf(data = COMUNA, fill = NA) +
@@ -66,13 +24,13 @@ load(here::here("analysis/data/radio.RData"))
                            which_north = "grid") +
     theme_void()
 
-  ggsave(filename = "results/03_Tipo-habitat.png",
-         plot = p03,
+  ggsave(filename = here::here("analysis/results/01_Tipo-habitat.png"),
+         plot = p01,
          width = 25, height = 18, units = "cm")
 
-  # Fig04. Pirámide de población por entorno urbano -------------------------
+  # Fig02. Pirámide de población por entorno urbano -------------------------
 
-  p04 <- RADIO$db |>
+  p02 <- RADIO$db |>
     group_by(TIPO_HABIT) |>
     summarise(across (.cols = c(starts_with("M_"), starts_with("V_")),
                       .fns = ~sum(.x, na.rm = T) ) ) |>
@@ -101,19 +59,19 @@ load(here::here("analysis/data/radio.RData"))
     theme(strip.text.x = element_text(size = 7),
           legend.position = "none")
 
-  ggsave(filename = "results/04_Piramide-TH.png",
-         plot = p04,
+  ggsave(filename = here::here("analysis/results/02_Piramide-TH.png"),
+         plot = p02,
          width = 14, height = 21, units = "cm")
 
-  # Fig05. NBI y MNI ---------------------------------------------------------
+  # Fig03. NBI y MNI ---------------------------------------------------------
 
   # NBI
-  p5_aux <- RADIO$ENT %>%
+  p3_aux <- RADIO$ENT %>%
     left_join(RADIO$db |> select(ID, NBI, SUP), by = "ID") %>%
     pivot_longer(cols = c(NBI, SUP)) |>
     select(ID, name, value)
 
-  p05a <- p5_aux |>
+  p03a <- p3_aux |>
     filter(name == "NBI") |>
     ggplot() +
     geom_sf(aes(fill = value), color = NA) +
@@ -133,7 +91,7 @@ load(here::here("analysis/data/radio.RData"))
     theme_void() +
     theme(legend.position = "bottom")
 
-  p05b <- p5_aux |>
+  p03b <- p3_aux |>
     filter(name == "SUP") |>
     ggplot() +
     geom_sf(aes(fill = value), color = NA) +
@@ -149,15 +107,15 @@ load(here::here("analysis/data/radio.RData"))
     theme_void() +
     theme(legend.position = "bottom")
 
-  ggsave(filename = "results/05_NBI-MNI.png",
-         plot = p05a + p05b,
+  ggsave(filename = here::here("analysis/results/03_NBI-MNI.png"),
+         plot = p03a + p03b,
          width = 27, height = 15, units = "cm")
 
-  rm(p5_aux)
+  rm(p3_aux)
 
-  # Fig06. Déficit -----------------------------------------------------------
+  # Fig04. Déficit -----------------------------------------------------------
 
-  p06_map <-  RADIO$REC %>%
+  p04_map <-  RADIO$REC %>%
     left_join(RADIO$db |> select(ID, starts_with("x100H_")), by = "ID") |>
     bi_class(x = x100H_CUANT, y = x100H_CUALI,
              style = "jenks", dim = 3) |>
@@ -176,27 +134,22 @@ load(here::here("analysis/data/radio.RData"))
     theme(legend.position = "none")
 
 
-  p06_legend <- bi_legend(pal = "GrPink",
+  p04_legend <- bi_legend(pal = "GrPink",
                       dim = 3,
                       xlab = "Déficit cuantitativo",
                       ylab = "Déficit cualitativo",
                       size = 20)
 
-  p06 <- p06_map + (plot_spacer() / p06_legend) +
-    plot_layout(ncol=2, widths=c(3,1))
-    # ggdraw() +
-    # draw_plot(p06_map, 0, 0, 1, 1) +
-    # draw_plot(p06_legend, 0, 1, 0.2, 0.2)
+  p04 <- p04_map + (plot_spacer() / p04_legend) +
+    plot_layout(ncol = 2, widths = c(3, 1))
 
-  # rgb(30, 0, 50, 1)
-
-  ggsave(filename = "results/06_Deficit.png",
-         plot = p06,
+  ggsave(filename = here::here("analysis/results/04_Deficit.png"),
+         plot = p04,
          width = 30, height = 25, units = "cm")
 
   # Tabla déficit por TH
 
-  p06_tab <- RADIO$db |>
+  p04_tab <- RADIO$db |>
     mutate(across(.cols = starts_with("x100H_"),
                   .fns = ~.x * HOGARES / 100) ) |>
     group_by(TIPO_HAB2) |>
@@ -206,56 +159,14 @@ load(here::here("analysis/data/radio.RData"))
                   .fns = ~.x / HOGARES * 100) ) |>
     select(TIPO_HAB2, starts_with("x100H_"))
 
-  xlsx::write.xlsx(p06_tab, file = "results/06_tabla-deficit.xlsx", row.names = T)
+  xlsx::write.xlsx(p04_tab, row.names = T,
+                   file = here::here("analysis/results/04_tabla-deficit.xlsx") )
 
-  rm(p06_map, p06_legend, p06_tab)
+  rm(p04_map, p04_legend, p04_tab)
 
-  # Fig07. Migración  -----------------------------------------------------------
+  # Fig06. PBG ---------------------------------------------------------------------
 
-  # scale_params <- data.frame(MIG = c("Paraguay"),
-  #                            style = c("bar"))
-
-  p07 <-  RADIO$REC %>%
-    left_join(RADIO$db |> select(ID, PERSONAS, starts_with("MIG_")), by = "ID")  |>
-    select(ID, starts_with("MIG_")) |>
-    pivot_longer(cols = starts_with("MIG_")) |>
-    mutate(MIG = str_remove(name, "MIG_"),
-           MIG = case_when(MIG == "PAR" ~ "Paraguay",
-                           MIG == "BOL" ~ "Bolivia",
-                           MIG == "PER" ~ "Perú")
-           ) |>
-    filter(value > 35) |>
-    st_centroid() |>
-    ggplot() +
-    geom_sf(aes(color = MIG, size = value), alpha = 0.6) +
-    geom_sf(data = COMUNA, fill = NA) +
-    geom_sf_text(data = COMUNA,
-                 color = "grey15",
-                 size = 8,
-                 aes(label = as.numeric(COMUNA))) +
-    annotation_scale(data = data.frame(MIG = c("Bolivia")) ) +
-    annotation_north_arrow(width = unit(1, "cm"), location='tr',
-                           which_north = "grid",
-                           data = data.frame(MIG = c("Perú")) ) +
-    facet_wrap(vars(MIG)) +
-    scale_size_continuous("Número de migrantes", trans = 'log10') +
-    scale_color_futurama(name = "País de origen") +
-    guides(size  = guide_legend(order = 1),
-           color = "none") +
-    theme_void() +
-    theme(legend.position = "bottom",
-          legend.box="vertical",
-          legend.margin=margin(),
-          strip.text.x = element_text(size = 12)
-          )
-
-  ggsave(filename = "results/07_Migrantes.png",
-         plot = p07,
-         width = 30, height = 15, units = "cm")
-
-  # Fig09. PBG ---------------------------------------------------------------------
-
-  p09 <- COMUNA |>
+  p06 <- COMUNA |>
     mutate(COMUNA = as.numeric(COMUNA)) |>
     left_join(AUX$PBG, by = "COMUNA" ) |>
     mutate(PBG = PBG / 1000000) |>
@@ -278,17 +189,17 @@ load(here::here("analysis/data/radio.RData"))
     theme_void() +
     theme(legend.position = "bottom")
 
-  ggsave(filename = "results/09_PBG.png",
-         plot = p09,
+  ggsave(filename = "results/06_PBG.png",
+         plot = p06,
          width = 25, height = 18, units = "cm")
 
-  # Fig10. Mapa de individuos y variables (Dim 1:2) -------------------------
+  # Fig06. Mapa de individuos y variables (Dim 1:2) -------------------------
 
   PCA_aux <- res_PCA[["var"]][["coord"]] |>
     as_tibble(rownames = "db") |>
     left_join(AUX$db_label, by = "db")
 
-  p10a <- fviz_pca_var(res_PCA, geom = F, title = "") +
+  p07a <- fviz_pca_var(res_PCA, geom = F, title = "") +
     geom_segment(aes(xend = Dim.1, yend = Dim.2, color = CLASE_lab),
                  x = 0, y = 0, data = PCA_aux,
                  arrow = arrow(length = unit(0.2, "cm"))) +
@@ -299,25 +210,25 @@ load(here::here("analysis/data/radio.RData"))
     labs(color = "") +
     theme(legend.position = "bottom")
 
-  p10b <- fviz_mfa_ind(res_PCA, geom = c("point"), title = "",
+  p07b <- fviz_mfa_ind(res_PCA, geom = c("point"), title = "",
                      alpha.ind = 0.1, habillage = data$gr) +
       theme(legend.position = "bottom")
 
-  p10b <- p10b |>
+  p07b <- p07b |>
     fviz_centr() |>
     geom_hull(axes = 1:2) +
     labs(fill = "Clúster") +
     guides(color = "none")
 
-  ggsave(filename = "results/10_Variables-Individuos_1-2.png",
-         plot = p10a + p10b,
+  ggsave(filename = "results/07_Variables-Individuos_1-2.png",
+         plot = p07a + p07b,
          width = 45, height = 23, units = "cm")
 
   rm(PCA_aux)
 
-  # Fig11. Ubicación espacial de cluster ------------------------------------
+  # Fig08. Ubicación espacial de cluster ------------------------------------
 
-  p11 <- data |>
+  p08 <- data |>
     ggplot() +
     geom_sf(data = net |> activate(edges) |> st_as_sf(),
             alpha = 0.5, color = "grey60") +
@@ -332,9 +243,11 @@ load(here::here("analysis/data/radio.RData"))
     annotation_north_arrow(width = unit(1, "cm"), location = 'tr') +
     theme_void()
 
-  ggsave(filename = paste0("results/11_Mapa-Cluster", AUX$n_cl,".png"),
-         plot = p11,
+  ggsave(filename = paste0("results/08_Mapa-Cluster", AUX$n_cl,".png"),
+         plot = p08,
          width = 23, height = 23, units = "cm")
+
+# Figuras Anexo ----------------------------------------------------------------
 
   # Fig12. Anexo C: Varianza explicada y Silhouette ------------------------------------
 
