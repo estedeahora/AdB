@@ -20,7 +20,7 @@ RADIO$ENT <- client$getLayer(layer = "geocenso2010:radios_codigo") |>
   mutate(COMUNA = str_sub(ID, start = 3, end = 5) ) |>
   st_transform(crs = AUX$crs)
 
-rm(client, request,wfs, filename)
+rm(client, request,wfs, fileName)
 
 # Radios 2010 recortados
 # Ver: Marcos, M., Mera, G., & Di Virgilio, M. M. (2015). Contextos urbanos de
@@ -28,10 +28,23 @@ rm(client, request,wfs, filename)
 #       según tipos de hábitat. Papeles de población, 84, 161–196.
 
 RADIO$REC <- st_read(here::here("analysis/data/radio_REC.geojson")) |>
-  st_transform(crs = AUX$crs)
+  st_transform(crs = AUX$crs) |>
+  mutate(TIPO_HABIT = factor(TIPO_HABIT,
+                             levels = c("Ciudad Central", "Centro Administrativo y de Negocios",
+                                        "Residencial alto", "Residencial medio", "Residencial bajo",
+                                        "Conjunto Habitacional", "Villa", "Asentamiento",
+                                        "Núcleo Habitacional Transitorio") ) ,
+         TIPO_HAB2 = factor(TIPO_HAB2,
+                            levels = c("Ciudad Central", "Centro Administrativo y de Negocios",
+                                       "Residencial alto", "Residencial medio", "Residencial bajo",
+                                       "Conjunto Habitacional", "Popular de Origen Informal") )
+         )
 
 # Datos auxiliares de radios
-RADIO$db <- read.csv(here::here("analysis/data/radio_db.csv"))
+RADIO$db <- read.csv(here::here("analysis/data/radio_db.csv"),
+                     check.names = F, colClasses = c("ID" = "character")) |>
+  mutate(TIPO_HABIT = factor(TIPO_HABIT, levels = levels(RADIO$REC$TIPO_HABIT)))
+
 
 # COMUNA
 COMUNA <- RADIO$ENT |>
