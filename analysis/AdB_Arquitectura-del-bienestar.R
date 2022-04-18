@@ -35,8 +35,8 @@ if(AUX$d){
   cat("Final:", as.character(Sys.time()),"\n")
 }else{
   if(file.exists(here::here("analysis/data/data.RData") ) &&
-     file.exists(here::here("analysis/data/net.RData") ) &&
-     file.exists(here::here("analysis/data/esquina.RData") )  ){
+       file.exists(here::here("analysis/data/net.RData") ) &&
+       file.exists(here::here("analysis/data/esquina.RData") )  ){
     # scripts01
     load(here::here("analysis/data/data.RData") )
     # scripts02
@@ -47,5 +47,6 @@ if(AUX$d){
 }
 
 source(here::here("analysis/scripts/03_Analisis-y-modelado.R"), encoding = "UTF-8")
+
 source(here::here("analysis/scripts/04_Resultados.R"), encoding = "UTF-8")
 

@@ -1,12 +1,12 @@
-# Datos RADIO ------------------------------------------------------------------
+# Armado de carpeta con resultados ---------------------------------------------
 
-if(file.exists(here::here("analysis/results/"))){
+if(!file.exists(here::here("analysis/results/"))){
   dir.create(here::here("analysis/results/"))
 }
 
-# Figuras Cuerpo ----------------------------------------------------------------------
+# Figuras Cuerpo ---------------------------------------------------------------
 
-  # Fig01. Entornos urbanos ------------------------------------------------------
+  # Fig01. Entornos urbanos ----------------------------------------------------
 
   AUX$TH <- c("#D1E107", "#0D9743",
               "#0AE1A7", "#E8EC6E", "#0072B2",
@@ -44,7 +44,8 @@ if(file.exists(here::here("analysis/results/"))){
                                              seq(5, 95, by = 5)),
                                         "+95")
                              ) ) |>
-    pivot_wider(id_cols = c(TIPO_HABIT, EDADQUI), names_from = "y", values_from = "value") |>
+    pivot_wider(id_cols = c("TIPO_HABIT", "EDADQUI"),
+                names_from = "y", values_from = "value") |>
     ungroup() |>
     ggplot() +
     geom_rect(data = data.frame(TIPO_HABIT =  unique(RADIO$db$TIPO_HABIT)),
@@ -191,7 +192,7 @@ if(file.exists(here::here("analysis/results/"))){
     theme_void() +
     theme(legend.position = "bottom")
 
-  ggsave(filename = "results/06_PBG.png",
+  ggsave(filename = here::here("analysis/results/06_PBG.png"),
          plot = p06,
          width = 25, height = 18, units = "cm")
 
@@ -222,7 +223,7 @@ if(file.exists(here::here("analysis/results/"))){
     labs(fill = "Clúster") +
     guides(color = "none")
 
-  ggsave(filename = "results/07_Variables-Individuos_1-2.png",
+  ggsave(filename = here::here("analysis/results/07_Variables-Individuos_1-2.png"),
          plot = p07a + p07b,
          width = 45, height = 23, units = "cm")
 
@@ -245,15 +246,16 @@ if(file.exists(here::here("analysis/results/"))){
     annotation_north_arrow(width = unit(1, "cm"), location = 'tr') +
     theme_void()
 
-  ggsave(filename = paste0("results/08_Mapa-Cluster", AUX$n_cl,".png"),
+  ggsave(filename = paste0(here::here("analysis/results/"),
+                           "/08_Mapa-Cluster", AUX$n_cl,".png"),
          plot = p08,
          width = 23, height = 23, units = "cm")
 
 # Figuras Anexo ----------------------------------------------------------------
 
-  # Fig12. Anexo C: Varianza explicada y Silhouette ------------------------------------
+  # Anexo C: Varianza explicada y Silhouette ------------------------------------
 
-  p12a <- fviz_eig(res_PCA,
+  p_AC01a <- fviz_eig(res_PCA,
                   main = "",
                   geom = "bar",
                   addlabels = T,
@@ -266,32 +268,31 @@ if(file.exists(here::here("analysis/results/"))){
     geom_text(x = 3.5, y = 31, label = "Dimensiones consideradas\n para el agrupamiento",
               color = "tomato4")
 
-  p12b <- data |>
+  p_AC01b <- data |>
     st_drop_geometry() |>
     select(-gr) |>
     fviz_nbclust(kmeans, method = 'silhouette', print.summary = F ) +
     labs(title = "", x = "Número de clústers", y = "Silhouette") +
     theme_minimal()
 
-  p12b[["layers"]][[3]][["data"]][["xintercept"]] <- AUX$n_cl
+  p_AC01b[["layers"]][[3]][["data"]][["xintercept"]] <- AUX$n_cl
 
-  ggsave(filename = "results/12_ApC_Varianza-silhouette.png",
-         plot = p12a + p12b,
+  ggsave(filename = here::here("analysis/results/ApC_01_Varianza-silhouette.png") ,
+         plot = p_AC01a + p_AC01b,
          width = 35, height = 15, units = "cm")
 
   # Fig13. Anexo C: Contribución de variables (Dim 1:2) -----------------------------
 
-  p13 <-  map(1:4, \(x){
+  p_AC02 <-  map(1:4, \(x){
     p <- fviz_contrib(res_PCA, choice = "var", axes = x,
                       title = paste0("Dimensión ", x)) +
       labs(y = "Contribución (%)")
     return(p)
   } )
 
-  ggsave(filename = "results/13_ApC_Contribucion.png",
-         plot = wrap_plots(p13),
+  ggsave(filename = here::here("analysis/results/ApC_Contribucion.png") ,
+         plot = wrap_plots(p_AC02),
          width = 35, height = 30, units = "cm")
-
 
   # Fig14. Anexo D: Boxplot de distancias por cluster ------------------------------------
 
@@ -323,7 +324,7 @@ if(file.exists(here::here("analysis/results/"))){
       }
     }
 
-    p15 <- bind_cols(data, df_cl)  |>
+    p_AE <- bind_cols(data, df_cl)  |>
       mutate(id = 1:n()) |>
       select(starts_with("cl")) |>
       pivot_longer(cols = cl2:cl7,
@@ -341,12 +342,12 @@ if(file.exists(here::here("analysis/results/"))){
             legend.text = element_text(size = 16),
             legend.title = element_text(size = 18))
 
-    ggsave(filename = "results/15_ApE_Cluster2-7.png",
-           plot = p15,
+    ggsave(filename = here::here("analysis/results/ApE_Cluster2-7.png"),
+           plot = p_AE,
            width = 48, height = 32, units = "cm")
 
     rm(i, df_cl, p15)
   }
 
-rm(p01, p02, p03, p04, p05a, p05b, p06, p07,
-   p09, p10a, p10b, p11, p12a, p12b, p13)
+rm(p01, p02, p03a, p03b, p04, p06, p07a, p07b, p08,
+   p_AC01a, p_AC01b, p_AC02 )
