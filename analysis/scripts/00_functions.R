@@ -69,7 +69,8 @@ gg_desc <- function(x, subfig = NA){
     wrap_dims()
 
   if(is.na(subfig) ) subfig <- ""
-  ggsave(filename = paste0("results/14", subfig, "_ApD_Distancia-",
+  ggsave(filename = paste0(here::here("analysis/results"),
+                           "/ApD_", subfig, "_Distancia-",
                            unique(x$CLASE),
                            ".png"),
          plot = p,
