@@ -2,6 +2,7 @@
 analysis/results/*
 analysis/data/*
 !analysis/data/base.xlsx
+!analysis/data/radio*
 
 # Artículo
 analysis/AdB_Figuras-y-Tablas.rar

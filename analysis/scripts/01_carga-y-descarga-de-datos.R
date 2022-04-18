@@ -12,16 +12,29 @@ request <- GMLFile$new(fileName)
 client <- WFSCachingClient$new(request)
 
 # Download RADIOS CENSO 2010
-RADIO <- client$getLayer(layer = "geocenso2010:radios_codigo") |>
+RADIO <- list()
+
+RADIO$ENT <- client$getLayer(layer = "geocenso2010:radios_codigo") |>
   select(ID = link) |>
   filter(str_starts(ID, "02")) |>
   mutate(COMUNA = str_sub(ID, start = 3, end = 5) ) |>
-  st_transform(crs = 4326)
+  st_transform(crs = AUX$crs)
 
 rm(client, request,wfs, filename)
 
+# Radios 2010 recortados
+# Ver: Marcos, M., Mera, G., & Di Virgilio, M. M. (2015). Contextos urbanos de
+#       la Ciudad de Buenos Aires: una propuesta de clasificación de la ciudad
+#       según tipos de hábitat. Papeles de población, 84, 161–196.
+
+RADIO$REC <- st_read(here::here("analysis/data/radio_REC.geojson")) |>
+  st_transform(crs = AUX$crs)
+
+# Datos auxiliares de radios
+RADIO$db <- read.csv(here::here("analysis/data/radio_db.csv"))
+
 # COMUNA
-COMUNA <- RADIO |>
+COMUNA <- RADIO$ENT |>
   group_by(COMUNA) |>
   summarise()
 
@@ -423,7 +436,7 @@ MAP_EDU <- list()
   MAP_TRA$COLECTIVO <- st_read("https://cdn.buenosaires.gob.ar/datosabiertos/datasets/colectivos/paradas-de-colectivo.geojson") |>
     mutate(tipo = "Parada de colectivo") |>
     select(tipo) |>
-    st_intersection(CABA)
+    st_intersection(CABA |> st_transform(crs = 4326))
 
   # 02 Tren/Subte --------------------------------------------------------------
 
@@ -444,7 +457,7 @@ MAP_EDU <- list()
   MAP_aux$TREN <- st_read("https://cdn.buenosaires.gob.ar/datosabiertos/datasets/estaciones-de-ferrocarril/estaciones-de-ferrocarril.geojson") |>
     mutate(tipo = "Estación de Tren") |>
     select(tipo) |>
-    st_intersection(CABA)
+    st_intersection(CABA |> st_transform(crs = 4326))
 
   MAP_TRA$TREN <- bind_rows(MAP_aux)
 

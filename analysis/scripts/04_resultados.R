@@ -1,6 +1,8 @@
 # Datos RADIO ------------------------------------------------------------------
 
-load(here::here("analysis/data/radio.RData"))
+if(file.exists(here::here("analysis/results/"))){
+  dir.create(here::here("analysis/results/"))
+}
 
 # Figuras Cuerpo ----------------------------------------------------------------------
 
