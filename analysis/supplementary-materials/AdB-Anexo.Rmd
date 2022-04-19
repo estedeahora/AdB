@@ -1,0 +1,120 @@
+---
+# title: "Untitled"
+
+output:
+  bookdown::html_document2:
+    number_sections: false
+    language:
+      label:
+        fig: 'Figura '
+
+lang: es
+
+fig-cap-location: top
+
+# execute: 
+#   echo: false
+#   warning: false
+#   message: false  
+#   
+# editor: visual
+---
+
+`r paste('Última actualización:', format(Sys.time(), '%d %B, %Y'))`
+
+```{r setup}
+#| echo: false
+#| message: false
+
+library(readxl)
+library(tidyverse)
+library(knitr)
+library(dplyr)
+library(kableExtra)
+
+knitr::opts_chunk$set(echo = FALSE, 
+                      message = FALSE, 
+                      warning = FALSE,
+                      fig.align = 'center', 
+                      dpi = 300, 
+                      out.width="85%"
+                      )
+
+options(knitr.kable.NA = '')
+
+# xaringanExtra::use_panelset()
+# xaringanExtra::style_panelset_tabs(font_family = "inherit")
+```
+
+# {.tabset .tabset-fade}
+
+## A. Indicadores CABA
+
+**ANEXO A: Descripción e indicadores de la CABA y Total AGBA**
+
+```{r}
+ 
+# read_excel(here::here("analysis/results/Tablas.xlsx"),
+#                             sheet = "ApA") |> 
+#   kbl() |> 
+#   kableExtra::row_spec(c(1:2,5:7,13:14, 19:20, 24,27), bold = T)
+  
+```
+
+## ANEXO B. Dimensiones del análisis
+
+```{r}
+#| tbl-cap: "Bases utilizadas en el análisis. Nombre, descripción y clase"
+
+
+db <- read_excel(here::here("analysis/data/base.xlsx"),
+                            sheet = "db") |> 
+    filter(ANALISIS == 1) 
+
+l <- db |>
+    mutate(CLASE_lab = factor(CLASE_lab,
+                              levels = unique(CLASE_lab) ) ) |>
+    count(CLASE_lab) |>
+    deframe()
+
+db |> 
+  select(db_lab, db) |> 
+  kbl(booktabs = T, col.names = c("Descripción", "Nombre db")) |>
+  pack_rows(index = l)
+
+```
+
+## ANEXO C. Resultados PCA
+
+![Varianza explicada por PCA (izquierda) y valor silhouette medio por clúster (derecha)](../Results/ApC_01_Varianza-silhouette.png)
+
+![Contribución de las variables a las primeras cuatro dimensiones del PCA](../Results/ApC_02_Contribucion.png)
+
+## ANEXO D. Distancias
+
+```{r}
+#| results = "asis"
+#| 
+path_anexo <- here::here("analysis/results/")
+
+archivo <- list.files(path_anexo)
+archivo <- archivo[stringr::str_starts(archivo, "ApD_")]
+
+for(i in archivo){
+  # knitr::include_graphics(paste0(path_anexo, i))
+  cat(paste0("![](../results/", i, ")"))
+  cat("\n")
+}
+```
+
+## ANEXO E. Resultados espaciales
+
+![Distribución espacial de clúster según número de clúster del análisis](../results/ApE_Cluster2-7.png)
+
+## ANEXO F. Sistema
+
+Información del software y versiones de paquetes utilizadas en el análisis.
+
+```{r}
+xfun::session_info()
+```
