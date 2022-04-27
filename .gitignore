@@ -4,13 +4,11 @@ analysis/data/*
 !analysis/data/base.xlsx
 !analysis/data/radio*
 
+analysis/supplementary-materials/AdB-Anexo.Rmd
+analysis/supplementary-materials/res.xlsx
 # Artículo
 analysis/AdB_Figuras-y-Tablas.rar
 *.docx
-
-
-# analysis/scripts/04-Resultados.R
-# analysis/scripts/_functions.R
 
 # _rawdata
 analysis/_rawdata/*
